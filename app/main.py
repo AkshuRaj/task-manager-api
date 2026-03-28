@@ -1,12 +1,13 @@
 from fastapi import FastAPI
-from app.database.connection import engine
 from app.database.connection import engine, Base
 from app.models import task
-
-Base.metadata.create_all(bind=engine)
-
+from app.routes.task_routes import router as task_router
 
 app = FastAPI()
+
+app.include_router(task_router)
+
+Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
