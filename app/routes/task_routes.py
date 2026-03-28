@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database.connection import SessionLocal
 from app.schemas.task_schema import TaskCreate
-from app.controllers.task_controller import create_task, get_tasks, update_task_status
+from app.controllers.task_controller import create_task, delete_task, get_tasks, update_task_status
 from typing import Optional
 from fastapi import HTTPException
 
@@ -64,4 +64,13 @@ def update_status(task_id: int, status: str, db: Session = Depends(get_db)):
             "id": updated_task.id,
             "status": updated_task.status
         }
+    }
+
+@router.delete("/tasks/{task_id}")
+def delete_task_api(task_id: int, db: Session = Depends(get_db)):
+    result = delete_task(db, task_id)
+
+    return {
+        "success": True,
+        "message": result["message"]
     }
