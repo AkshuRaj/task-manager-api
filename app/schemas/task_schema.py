@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class TaskCreate(BaseModel):
-    title: str
-    description: str
+    title: str = Field(..., min_length=3, max_length=100)
+    description: str = Field(..., min_length=5)

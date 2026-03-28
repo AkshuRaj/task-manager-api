@@ -25,6 +25,11 @@ def get_tasks(db, status=None, search=None, page=1, limit=5):
     if search:
         query = query.filter(Task.title.ilike(f"%{search}%"))
 
+    if sort == "desc": #sort
+        query = query.order_by(Task.created_at.desc())
+    else:
+        query = query.order_by(Task.created_at.asc())
+
     #Pagination
     offset = (page - 1) * limit
     tasks = query.offset(offset).limit(limit).all()

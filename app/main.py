@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from app.database.connection import engine, Base
 from app.models import task
 from app.routes.task_routes import router as task_router
+from fastapi.responses import JSONResponse
+from fastapi import Request
 
 app = FastAPI()
 
@@ -22,3 +24,14 @@ def test_db():
         return {"message": "Database connected successfully"}
     except Exception as e:
         return {"error": str(e)}
+    
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "message": "Internal server error",
+            "error": str(exc)
+        }
+    )
