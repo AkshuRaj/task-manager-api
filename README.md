@@ -82,7 +82,7 @@ task-manager-api/
 
 **1. Clone the Repository**
 ```bash
-git clone https://github.com/your-username/task-manager-api.git
+git clone https://github.com/akshuraj/task-manager-api.git
 cd task-manager-api
 ```
 
