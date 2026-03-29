@@ -14,7 +14,7 @@ def create_task(db: Session, title: str, description: str):
 
     return new_task
 
-def get_tasks(db, status=None, search=None, page=1, limit=5):
+def get_tasks(db, status=None, search=None, page=1, limit=5, sort="desc"):
     query = db.query(Task)
 
     #Filter by status

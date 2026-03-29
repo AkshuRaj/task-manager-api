@@ -5,6 +5,7 @@ from app.schemas.task_schema import TaskCreate
 from app.controllers.task_controller import create_task, delete_task, get_tasks, update_task_status
 from typing import Optional
 from fastapi import HTTPException
+from app.utils.dependency import get_current_user
 
 router = APIRouter()
 
@@ -15,8 +16,13 @@ def get_db():
     finally:
         db.close()
 
+# CREATE TASK
 @router.post("/tasks")
-def create_new_task(task: TaskCreate, db: Session = Depends(get_db)):
+def create_new_task(
+    task: TaskCreate,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)  
+):
     new_task = create_task(db, task.title, task.description)
     return {
         "success": True,
@@ -28,15 +34,18 @@ def create_new_task(task: TaskCreate, db: Session = Depends(get_db)):
         }
     }
 
+# GET TASKS
 @router.get("/tasks")
 def get_all_tasks(
     status: Optional[str] = None,
     search: Optional[str] = None,
     page: int = 1,
     limit: int = 5,
-    db: Session = Depends(get_db)
+    sort: str = "desc",
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)   
 ):
-    tasks = get_tasks(db, status, search, page, limit)
+    tasks = get_tasks(db, status, search, page, limit, sort)
 
     return {
         "success": True,
@@ -53,8 +62,14 @@ def get_all_tasks(
         ]
     }
 
+# UPDATE STATUS
 @router.patch("/tasks/{task_id}/status")
-def update_status(task_id: int, status: str, db: Session = Depends(get_db)):
+def update_status(
+    task_id: int,
+    status: str,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)  
+):
     updated_task = update_task_status(db, task_id, status)
 
     return {
@@ -66,8 +81,13 @@ def update_status(task_id: int, status: str, db: Session = Depends(get_db)):
         }
     }
 
+#  DELETE TASK
 @router.delete("/tasks/{task_id}")
-def delete_task_api(task_id: int, db: Session = Depends(get_db)):
+def delete_task_api(
+    task_id: int,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)   
+):
     result = delete_task(db, task_id)
 
     return {

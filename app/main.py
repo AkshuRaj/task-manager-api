@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 from app.database.connection import engine, Base
-from app.models import task
+from app.models import task, user
 from app.routes.task_routes import router as task_router
 from fastapi.responses import JSONResponse
 from fastapi import Request
+from app.routes.auth_routes import router as auth_router
 
 app = FastAPI()
 
+app.include_router(auth_router)
 app.include_router(task_router)
+
 
 Base.metadata.create_all(bind=engine)
 
